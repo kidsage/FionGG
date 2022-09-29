@@ -9,7 +9,29 @@ from accounts.serializers import *
 from accounts.models import User
 
 
-class UserSigninView(generics.GenericAPIView):
+class UserSignupView(generics.CreateAPIView):
+    serializer_class = UserSignupSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid(raise_exception=True):
+            return Response({"message": "Request Body Error."}, status=status.HTTP_409_CONFLICT)
+
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save() # request 필요 -> 오류 발생
+
+        return Response(
+            {
+            # get_serializer_context: serializer에 포함되어야 할 어떠한 정보의 context를 딕셔너리 형태로 리턴
+            # 디폴트 정보 context는 request, view, format
+                "user": UserSerializer(user, context=self.get_serializer_context()).data,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class UserLoginView(generics.GenericAPIView):
     serializer_class = UserLoginSerializer
     permission_classes = [AllowAny]
 
@@ -27,15 +49,14 @@ class UserSigninView(generics.GenericAPIView):
 
         return Response(
             {
-                 "id": UserSerializer(
-                     user, context = self.get_serializer_context()
-                 ).data.get('id'), 
-                 "token": user['token']
-             }
+                 "user": UserSerializer(user, context = self.get_serializer_context()).data,
+                 "token": user['token'],
+             },
+             status=status.HTTP_200_OK,
         ) 
 
 
-class LogoutView(generics.APIView):
+class UserLogoutView(generics.APIView):
     def post(self, request, format=None):
         request.auth.delete()
         return Response(status=status.HTTP_200_OK)
