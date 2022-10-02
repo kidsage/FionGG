@@ -1,5 +1,6 @@
 import os
 from django.db import models
+from django.db.models.signals import post_save
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.utils import timezone
 from django.dispatch import receiver
@@ -58,8 +59,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(max_length=255, unique=True)
     username = models.CharField(max_length=10, unique=True)
-    image = models.ImageField(blank=True, null=True, upload_to='images/user/%Y/%m/%d',
-                              default='images/no_image.png', verbose_name='이미지')
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
@@ -76,3 +75,20 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def is_staff(self):
         return self.is_admin
+
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    nickname = models.CharField(max_length=10)
+    image = models.ImageField(blank=True, null=True, upload_to='images/user/%Y/%m/%d', default='images/no_image.png')
+
+
+@receiver(post_save, sender=User)
+def created_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
