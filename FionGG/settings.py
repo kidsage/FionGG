@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
-import os
 from datetime import timedelta
+import os
+import json
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-003(+s15bfnr$e*-5xh$%i9b3f_ce)@a2+pl*)8+r=pu(y(#4&'
+with open(os.path.join(BASE_DIR, 'config.json'), 'r') as f:
+    json_data = json.load(f)
+    
+SECRET_KEY = json_data['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -88,8 +93,12 @@ WSGI_APPLICATION = 'FionGG.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'fiongg',
+        'USER': 'postgres',
+        'PASSWORD': 'rlatjrwn31!',
+        'HOST': 'localhost',
+        'PORT': '5432' 
     }
 }
 
@@ -191,4 +200,3 @@ JWT_AUTH = {
     'JWT_AUTH_HEADER_PREFIX': 'JWT',
     'JWT_AUTH_COOKIE': None,
 }
-
