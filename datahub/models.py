@@ -1,4 +1,6 @@
 from django.db import models
+import requests
+from io import BytesIO
 
 # Create your models here.
 class UserInformation(models.Model):
@@ -7,13 +9,27 @@ class UserInformation(models.Model):
     level = models.PositiveIntegerField(null=True)
 
 
-class Match(models.Model):
-    pass
+class MatchDB(models.Model):
+    matchtype = models.PositiveSmallIntegerField()
+    desc = models.CharField(max_length=10)
+
+    class Meta:
+        unique_together = ('matchtype', 'desc')
 
 
-class Match(models.Model):
-    pass
+class SpidDB(models.Model):
+    spid = models.PositiveIntegerField()
+    name = models.CharField(max_length=30)
 
 
-class Match(models.Model):
-    pass
+class ClassDB(models.Model):
+    class_id = models.PositiveSmallIntegerField()
+    class_name = models.CharField(max_length=100)
+    class_img = models.CharField()
+
+
+class PositionDB(models.Model):
+    spposition = models.PositiveSmallIntegerField()
+    desc = models.CharField(max_length=10)
+
+
