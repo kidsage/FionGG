@@ -11,11 +11,6 @@ JSON_PATH = os.path.join(BASE_DIR, 'config.json')
 with open(JSON_PATH, 'r') as f:
     json_data = json.load(f)
 
-def request_decorator(func): # 10/8 데코레이터 마저 만들어야함. 제발...!!!!!
-    def decorated():
-        req = requests.get()
-
-
 
 # API
 class FionApi:
