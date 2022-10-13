@@ -41,3 +41,6 @@ class FaceonSerializer(serializers.ModelSerializer):
     class Meta:
         model = MatchDB
         fields = ['sp_id', 'p_id', 'faceon']
+
+
+# 10/13 pass
