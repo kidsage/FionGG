@@ -57,7 +57,7 @@ class DivisionDB(models.Model):
 class FaceonDB(models.Model):
     sp_id = models.ForeignKey(SpidDB, on_delete=models.CASCADE, null=True)
     p_id = models.PositiveIntegerField()
-    division_name = models.ImageField(upload_to='images/player')
+    faceon = models.ImageField(upload_to='images/player')
 
     class Meta:
         db_table = 'FaceonDB'
